@@ -89,12 +89,11 @@ public class ServerSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     public LdapUserDetailsService userDetailsServiceBean() throws Exception {
-        LdapContextSource ldapContext = contextSource();
         String searchBase = "cn=USER,cn=users,ou=members,dc=leonardosugahara,dc=com,dc=br";
         String searchFilter = "cn={0}";
-        FilterBasedLdapUserSearch search = new FilterBasedLdapUserSearch(searchBase, searchFilter, ldapContext);
+        FilterBasedLdapUserSearch search = new FilterBasedLdapUserSearch(searchBase, searchFilter, contextSource());
         search.setSearchSubtree(false);
-        LdapUserDetailsService service = new LdapUserDetailsService(search);
+        LdapUserDetailsService service = new LdapUserDetailsService(search,ldapAuthoritiesPopulator(contextSource()));
         service.setUserDetailsMapper(new LdapUserDetailsMapper());
         return service;
     }
